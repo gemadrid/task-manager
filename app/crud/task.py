@@ -9,6 +9,7 @@ from app.schemas import task as schema
 
 def get_user_tasks(db: Session, user_id: int,
                    completed: bool | None = None, title: str | None = None, search: str | None = None,
+                   order_by: str | None = None, order: str = "asc",
                    skip: int = 0, limit: int = 100) -> list[model.Task]:
     # Basic query
     stmt = select(model.Task).where(model.Task.user_id == user_id)
@@ -16,16 +17,27 @@ def get_user_tasks(db: Session, user_id: int,
     if completed is not None:
         stmt = stmt.where(model.Task.completed == completed)
     if title:
-        # Delete whitespaces
-        # title = title.strip()
-        # if title:
         stmt = stmt.where(model.Task.title.icontains(title))
     if search:
         stmt = stmt.where(or_(model.Task.title.icontains(search), model.Task.description.icontains(search)))
+    # Order by
+    order_fields = {
+        "id": model.Task.id,
+        "title": model.Task.title,
+        "description": model.Task.description,
+        "completed": model.Task.completed
+    }
+    if order_by in order_fields:
+        column = order_fields[order_by]
+        if order == "desc":
+            stmt = stmt.order_by(column.desc())
+        else:
+            stmt = stmt.order_by(column)
     # Finally, offset and limit
     stmt = stmt.offset(skip).limit(limit)
     result = db.execute(stmt)
     return result.scalars().all()
+
 
 def get_user_task_by_id(db: Session, user_id: int, task_id: int) -> model.Task | None:
     stmt = select(model.Task).where(model.Task.user_id == user_id).where(model.Task.id == task_id)

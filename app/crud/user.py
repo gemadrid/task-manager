@@ -28,25 +28,8 @@ def create_user(db: Session, user_create: schema.UserCreate) -> model.User:
 
 
 def update_user(db: Session, User_id: int, user_update: schema.UserUpdate) -> model.User | None:
-    # task = get_task_by_id(db, task_id)
-    # if not task:
-    #     return None
-    
-    # task_data = task_update.model_dump(exclude_unset=True)
-    # for field, value in task_data.items():
-    #     setattr(task, field, value)
-    
-    # db.commit()
-    # db.refresh(task)
-    # return task
     pass
 
 
 def delete_user(db: Session, user_id: int) -> bool:
-    # task = get_task_by_id(db, task_id)
-    # if not task:
-    #     return False
-    # db.delete(task)
-    # db.commit()
-    # return True
     pass

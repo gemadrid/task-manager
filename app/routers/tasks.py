@@ -20,8 +20,9 @@ router = APIRouter(
 @router.get("/", response_model=list[TaskResponse])
 def read_tasks(db: SessionDep, current_user: CurrentActiveUserDep,
                completed: bool | None = None, title: str | None = None, search: str | None = None,
+               order_by: str | None = None, order: str = "asc",
                skip: Annotated[int, Query(ge=0)] = 0, limit: Annotated[int, Query(ge=0, le=100)] = 100):
-    return crud.get_user_tasks(db, current_user.id, completed, title, search, skip, limit)
+    return crud.get_user_tasks(db, current_user.id, completed, title, search, order_by, order, skip, limit)
 
 
 @router.get("/{task_id}", response_model=TaskResponse)

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 from app.schemas.task import Task
 
@@ -18,8 +18,7 @@ class User(UserBase):
     is_active: bool
     tasks: list[Task] = []
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class UserUpdate(UserBase):
