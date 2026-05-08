@@ -25,7 +25,9 @@ def get_user_tasks(db: Session, user_id: int,
         "id": model.Task.id,
         "title": model.Task.title,
         "description": model.Task.description,
-        "completed": model.Task.completed
+        "completed": model.Task.completed,
+        "created_at": model.Task.created_at,
+        "updated_at": model.Task.updated_at
     }
     if order_by in order_fields:
         column = order_fields[order_by]
