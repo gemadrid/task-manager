@@ -47,7 +47,7 @@ def update_task(task_id: int, task_update: TaskUpdate, db: SessionDep, current_u
 
 
 @router.delete("/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_task(task_id: int, db: SessionDep, current_user: CurrentActiveUserDep) -> dict[str, str]:
+def delete_task(task_id: int, db: SessionDep, current_user: CurrentActiveUserDep):
     success = crud.delete_user_task(db, current_user.id, task_id)
     if not success:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")

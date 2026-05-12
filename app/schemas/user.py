@@ -1,9 +1,9 @@
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict, EmailStr
 
 
 
 class UserBase(BaseModel):
-    email: str
+    email: EmailStr
 
 
 class UserCreate(UserBase):
@@ -11,7 +11,8 @@ class UserCreate(UserBase):
 
 
 class UserUpdate(UserBase):
-    email: str | None = None
+    email: EmailStr | None = None
+    password: str | None = Field(default=None, min_length=8)
     is_active: bool | None = None
 
 
