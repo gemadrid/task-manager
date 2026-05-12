@@ -8,7 +8,7 @@ from app.core.security import decode_token
 from app.crud.user import get_user_by_id
 from app.dependencies.database import SessionDep
 from app.schemas.token import TokenData
-from app.schemas.user import User
+from app.models.user import User
 
 
 

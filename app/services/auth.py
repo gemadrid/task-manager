@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 
-from app.schemas.user import User, UserCreate
+from app.models.user import User
+from app.schemas.user import UserCreate
 from app.crud.user import get_user_by_email, create_user
 from app.core.security import verify_password, DUMMY_HASH
 
