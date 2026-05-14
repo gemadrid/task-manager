@@ -48,7 +48,7 @@ def update_user(db: Session, user_id: int, user_update: schema.UserUpdate) -> mo
 def delete_user(db: Session, user_id: int) -> bool:
     user = get_user_by_id(db, user_id)
     if not user:
-        return None
+        return False
     db.delete(user)
     db.commit()
     return True

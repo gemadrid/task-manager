@@ -30,4 +30,4 @@ def update_users_me(user_update: UserUpdate, db: SessionDep, current_user: Curre
 def delete_users_me(db: SessionDep, current_user: CurrentActiveUserDep):
     success = crud.delete_user(db, current_user.id)
     if not success:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
