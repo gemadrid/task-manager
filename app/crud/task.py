@@ -48,7 +48,6 @@ def get_user_task_by_id(db: Session, user_id: int, task_id: int) -> model.Task |
 
 
 def create_user_task(db: Session, user_id: int, task_create: schema.TaskCreate) -> model.Task:
-    # db_task = model.Task(title=task.title, description=task.description)
     task = model.Task(**task_create.model_dump(), user_id=user_id)
     db.add(task)
     db.commit()

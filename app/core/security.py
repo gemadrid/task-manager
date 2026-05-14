@@ -37,7 +37,6 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None) -> s
 def create_access_token_for_user(user_id: int) -> str:
     access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
     access_token = create_access_token(data={"sub": str(user_id)}, expires_delta=access_token_expires)
-    # return Token(access_token=access_token, token_type="bearer")
     return access_token
 
 def decode_token(token: str) -> dict[str, Any]:

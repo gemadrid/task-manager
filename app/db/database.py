@@ -13,6 +13,6 @@ engine = create_engine(settings.database_url, connect_args=connect_args)
 # Session
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# Base (para modelos)
+# Base (for models)
 class Base(DeclarativeBase):
     pass

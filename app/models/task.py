@@ -18,10 +18,8 @@ class Task(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc),
                                                  onupdate=lambda: datetime.now(timezone.utc))
-    # created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=func.now())
-    # updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=func.now(), onupdate=func.now())
 
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
 
-    # Relación con user
+    # User relationship
     user: Mapped["User"] = relationship(back_populates="tasks")
