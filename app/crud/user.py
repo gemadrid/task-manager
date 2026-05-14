@@ -27,9 +27,28 @@ def create_user(db: Session, user_create: schema.UserCreate) -> model.User:
     return user
 
 
-def update_user(db: Session, User_id: int, user_update: schema.UserUpdate) -> model.User | None:
-    pass
+def update_user(db: Session, user_id: int, user_update: schema.UserUpdate) -> model.User | None:
+    user = get_user_by_id(db, user_id)
+    if not user:
+        return None
+    
+    user_data = user_update.model_dump(exclude_unset=True)
+
+    if "password" in user_data:
+        user.hashed_password = get_password_hash(user_data.pop("password"))
+
+    for field, value in user_data.items():
+        setattr(user, field, value)
+    
+    db.commit()
+    db.refresh(user)
+    return user
 
 
 def delete_user(db: Session, user_id: int) -> bool:
-    pass
+    user = get_user_by_id(db, user_id)
+    if not user:
+        return None
+    db.delete(user)
+    db.commit()
+    return True

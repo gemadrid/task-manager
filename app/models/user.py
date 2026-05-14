@@ -16,4 +16,4 @@ class User(Base):
     is_active: Mapped[bool] = mapped_column(default=True)
 
     # Relación con tasks
-    tasks: Mapped[List["Task"]] = relationship(back_populates="user")
+    tasks: Mapped[List["Task"]] = relationship(back_populates="user", cascade="all, delete-orphan")

@@ -38,7 +38,7 @@ def create_task(new_task: TaskCreate, db: SessionDep, current_user: CurrentActiv
     return crud.create_user_task(db, current_user.id, new_task)
 
 
-@router.put("/{task_id}", response_model=TaskPublic)
+@router.patch("/{task_id}", response_model=TaskPublic)
 def update_task(task_id: int, task_update: TaskUpdate, db: SessionDep, current_user: CurrentActiveUserDep):
     result = crud.update_user_task(db, current_user.id, task_id, task_update)
     if not result:
