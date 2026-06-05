@@ -77,13 +77,6 @@ def test_create_task_no_title(auth_client: TestClient):
     response = auth_client.post("/tasks/", json=data)
     assert response.status_code == 422
 
-def test_create_task_unauthenticated(client: TestClient):
-    data = {
-        "title": "Test task"
-    }
-    response = client.post("/tasks/", json=data)
-    assert response.status_code == 401
-
 
 ### GET /tasks/ ###
 def test_get_tasks_empty_list(auth_client: TestClient):

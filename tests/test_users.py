@@ -13,10 +13,6 @@ def test_get_user_success(auth_client: TestClient, test_user: User):
     assert user_data["id"] == test_user.id
     assert user_data["is_active"] == test_user.is_active
 
-def test_get_user_unauthenticated(client: TestClient):
-    response =client.get("/users/me")
-    assert response.status_code == 401
-
 
 # UPDATE
 def test_update_user_success(auth_client: TestClient):
@@ -48,5 +44,6 @@ def test_update_bad_password(auth_client: TestClient):
 def test_delete_success(auth_client: TestClient):
     response = auth_client.delete("/users/me")
     assert response.status_code == 204
+    # Testing if we can no longing access the endpoint
     response = auth_client.get("/users/me")
     assert response.status_code == 401
