@@ -20,14 +20,14 @@ def read_users_me(current_user: CurrentActiveUserDep):
 
 @router.patch("/me", response_model=UserPublic)
 def update_users_me(user_update: UserUpdate, db: SessionDep, current_user: CurrentActiveUserDep):
+    if user_update.email and user_update.email != current_user.email:
+        existing = crud.get_user_by_email(db, user_update.email)
+        if existing:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already in use")
     result = crud.update_user(db, current_user.id, user_update)
-    if not result:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     return result
 
 
 @router.delete("/me", status_code=status.HTTP_204_NO_CONTENT)
 def delete_users_me(db: SessionDep, current_user: CurrentActiveUserDep):
-    success = crud.delete_user(db, current_user.id)
-    if not success:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    crud.delete_user(db, current_user.id)

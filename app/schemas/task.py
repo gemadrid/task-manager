@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, Field, ConfigDict
 
 
 
@@ -10,11 +10,11 @@ class TaskBase(BaseModel):
 
 
 class TaskCreate(TaskBase):
-    pass
+    title: str = Field(min_length=1)
 
 
 class TaskUpdate(TaskBase):
-    title: str | None = None
+    title: str | None = Field(default=None, min_length=1)
     description: str | None = None
     completed: bool | None = None
 
