@@ -24,7 +24,7 @@ TEST_DATABASE_URL: str = "sqlite:///:memory:"
 
 engine = create_engine(TEST_DATABASE_URL, connect_args={"check_same_thread": False}, poolclass=StaticPool)
 
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+TestingSessionLocal = sessionmaker(engine, autocommit=False, autoflush=False)
 
 @pytest.fixture(scope="session", autouse=True)
 def setup_test_database():
@@ -34,7 +34,7 @@ def setup_test_database():
 
 # Yield a sesion with the test database, and rollback transactions so that each test is isolated
 @pytest.fixture(scope="function")
-def db() -> Generator:
+def db() -> Generator[Session, None, None]:
     connection = engine.connect()
     transaction = connection.begin()
     session = TestingSessionLocal(bind=connection)

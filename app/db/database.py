@@ -11,7 +11,7 @@ connect_args = {"check_same_thread": False} if "sqlite" in settings.database_url
 engine = create_engine(settings.database_url, connect_args=connect_args)
 
 # Session
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+SessionLocal = sessionmaker(engine, autocommit=False, autoflush=False)
 
 # Base (for models)
 class Base(DeclarativeBase):
