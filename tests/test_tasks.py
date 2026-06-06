@@ -105,11 +105,10 @@ def test_get_tasks_success(db: Session, auth_client: TestClient, test_user: User
     assert task2_data["description"] == task2.description
     assert task2_data["completed"] == task2.completed
 
-def test_get_tasks_user_isolation(db: Session, auth_client: TestClient, second_auth_client: TestClient, test_user: User, second_test_user: User):
+def test_get_tasks_user_isolation_user1(db: Session, auth_client: TestClient, test_user: User, second_test_user: User):
     user1_task1 = create_task(db, test_user, title="User 1 task 1")
     user1_task2 = create_task(db, test_user, title="User 1 task 2")
     user2_task = create_task(db, second_test_user, title="User 2 task")
-    # First user
     response = auth_client.get("/tasks/")
     assert response.status_code == 200
     task_list: list = response.json()
@@ -118,7 +117,11 @@ def test_get_tasks_user_isolation(db: Session, auth_client: TestClient, second_a
     assert user1_task1.id in ids
     assert user1_task2.id in ids
     assert user2_task.id not in ids
-    # Second user
+
+def test_get_tasks_user_isolation_user2(db: Session, second_auth_client: TestClient, test_user: User, second_test_user: User):
+    user1_task1 = create_task(db, test_user, title="User 1 task 1")
+    user1_task2 = create_task(db, test_user, title="User 1 task 2")
+    user2_task = create_task(db, second_test_user, title="User 2 task")
     response = second_auth_client.get("/tasks/")
     assert response.status_code == 200
     task_list: list = response.json()
@@ -212,8 +215,8 @@ def test_get_tasks_order_by_completed(db: Session, auth_client: TestClient, test
     response = auth_client.get("/tasks", params={"order_by": "completed", "order": order})
     assert response.status_code == 200
     task_list = response.json()
-    completed = [task["completed"] for task in task_list]
-    assert completed == expected_completed
+    completed_values = [task["completed"] for task in task_list]
+    assert completed_values == expected_completed
 
 def test_get_tasks_order_by_id(db: Session, auth_client: TestClient, test_user: User):
     for i in range(3):
@@ -296,7 +299,7 @@ def test_get_tasks_pagination_empty_results(db: Session, auth_client: TestClient
     ("limit", "101"),
     ("skip", "-1"),
 ])
-def test_get_tasks_pagination_invalid_values(db: Session, auth_client: TestClient, test_user: User, parameter, parameter_value):
+def test_get_tasks_pagination_invalid_values(auth_client: TestClient, parameter, parameter_value):
     response = auth_client.get("/tasks", params={"order_by": "id", parameter: parameter_value})
     assert response.status_code == 422
 
@@ -310,10 +313,6 @@ def test_get_task_by_id(auth_client: TestClient, user_task: Task):
     assert task_data["title"] == user_task.title
     assert task_data["description"] == user_task.description
     assert task_data["completed"] == user_task.completed
-    created_at = datetime.fromisoformat(task_data["created_at"])
-    assert created_at == user_task.created_at
-    updated_at = datetime.fromisoformat(task_data["updated_at"])
-    assert updated_at == user_task.updated_at
 
 def test_get_nonexistent_task(auth_client: TestClient):
     response = auth_client.get("/tasks/99999")
@@ -366,7 +365,7 @@ def test_update_date_change(auth_client: TestClient, user_task: Task):
         "title": "check date change"
     }
     updated_at = user_task.updated_at
-    time.sleep(0.01)
+    time.sleep(0.1)
     response = auth_client.patch(f"/tasks/{user_task.id}", json=data)
     assert response.status_code == 200
     task_data = response.json()

@@ -9,11 +9,11 @@ from fastapi.testclient import TestClient
 from app.db.database import Base
 from app.main import app
 from app.dependencies.database import get_db
-from app.core.security import get_password_hash, create_access_token_for_user
+from app.core.security import create_access_token_for_user
 from app.models.user import User
 from app.models.task import Task
 from app.schemas.user import UserCreate
-from app.schemas.task import TaskCreate, TaskUpdate
+from app.schemas.task import TaskCreate
 from app.crud.user import create_user
 from app.crud.task import create_user_task
 
@@ -58,18 +58,6 @@ def client(db: Session) -> Generator[TestClient, None, None]:
     
     app.dependency_overrides.clear()
 
-@pytest.fixture(scope="function")
-def second_client(db: Session) -> Generator[TestClient, None, None]:
-    def override_get_db():
-        yield db
-
-    app.dependency_overrides[get_db] = override_get_db
-
-    with TestClient(app) as test_client:
-        yield test_client
-    
-    app.dependency_overrides.clear()
-
 
 # Test user (and second test user)
 @pytest.fixture(scope="function")
@@ -88,7 +76,7 @@ def second_test_user(db: Session) -> User:
     ))
     return second_test_user
 
-# Add token headers to test client
+# Add token headers to test client (for users 1 and 2)
 @pytest.fixture(scope="function")
 def auth_client(client: TestClient, test_user: User) -> Generator[TestClient, None, None]:
     access_token = create_access_token_for_user(test_user.id)
@@ -98,12 +86,12 @@ def auth_client(client: TestClient, test_user: User) -> Generator[TestClient, No
     client.headers.clear()
 
 @pytest.fixture(scope="function")
-def second_auth_client(second_client: TestClient, second_test_user: User) -> Generator[TestClient, None, None]:
+def second_auth_client(client: TestClient, second_test_user: User) -> Generator[TestClient, None, None]:
     access_token = create_access_token_for_user(second_test_user.id)
     headers = {"Authorization": f"Bearer {access_token}"}
-    second_client.headers.update(headers)
-    yield second_client
-    second_client.headers.clear()
+    client.headers.update(headers)
+    yield client
+    client.headers.clear()
 
 # Task fixtures for each user (for GET by id, UPDATE and DELETE tests)
 @pytest.fixture(scope="function")
