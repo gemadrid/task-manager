@@ -5,9 +5,6 @@ from app.routers import tasks, auth, users
 
 
 
-Base.metadata.create_all(engine)
-
-
 app = FastAPI()
 
 app.include_router(tasks.router)
