@@ -11,6 +11,7 @@ dependencies = [
     "pwdlib[argon2]>=0.2.0",
     "pyjwt>=2.8.0",
     "alembic>=1.18.4",
+    "psycopg2-binary>=2.9.0",
 ]
 
 [project.optional-dependencies]
